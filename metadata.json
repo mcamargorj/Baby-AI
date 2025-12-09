@@ -1,0 +1,7 @@
+{
+  "name": "BabyAI - Seu Tamagotchi Inteligente",
+  "description": "Um Tamagotchi virtual alimentado por IA. Ensine, converse e cuide do seu Baby AI enquanto ele evolui.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
