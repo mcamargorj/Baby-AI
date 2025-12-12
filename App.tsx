@@ -155,7 +155,7 @@ const SignupView = ({
       <Button fullWidth onClick={onCreate} variant="success" disabled={isGenerating}>
         {isGenerating ? (
            <span className="flex items-center gap-2">
-             <Wand2 className="animate-spin" size={18} /> Gerando visual único...
+             <Wand2 className="animate-spin" size={18} /> Preparando o Baby...
            </span>
         ) : 'Nascer Baby AI! 🐣'}
       </Button>
@@ -289,14 +289,17 @@ const App: React.FC = () => {
     }
   };
 
-  const generateDiceBearAvatar = (seed: string, gender: BabyGender) => {
-    // Use a style that looks like a character/baby
-    const style = 'adventurer'; 
-    // Randomize background color for uniqueness
-    const bgColors = ['b6e3f4', 'c0aede', 'd1d4f9', 'ffd5dc', 'ffdfbf'];
-    const randomBg = bgColors[Math.floor(Math.random() * bgColors.length)];
-    
-    return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}&backgroundColor=${randomBg}&radius=50`;
+  // Helper para pegar a imagem estática correta da pasta public/img
+  const getStaticAvatarPath = (gender: BabyGender): string => {
+    switch (gender) {
+      case BabyGender.BOY:
+        return '/img/menino.png';
+      case BabyGender.GIRL:
+        return '/img/menina.png';
+      case BabyGender.NEUTRAL:
+      default:
+        return '/img/neutro.png';
+    }
   };
 
   const handleCreateBaby = async () => {
@@ -316,17 +319,13 @@ const App: React.FC = () => {
     tryStartMusic();
 
     try {
-       // Tenta gerar com Gemini
-       let avatar = await geminiService.generateBabyAvatar(signupGender);
+       // Usando imagens estáticas locais para evitar erro de cota da API
+       // Delay artificial pequeno para dar sensação de "processamento"
+       await new Promise(resolve => setTimeout(resolve, 800));
        
-       // Fallback se o Gemini falhar (ex: Cota excedida - erro 429)
-       if (!avatar) {
-         console.warn("Gemini avatar generation failed (likely quota limit). Using DiceBear fallback.");
-         avatar = generateDiceBearAvatar(babyName + creatorName, signupGender);
-         alert("O servidor de IA está com alta demanda! Criamos um avatar especial alternativo para você começar a jogar agora mesmo. 🎨");
-       }
+       const avatarPath = getStaticAvatarPath(signupGender);
        
-       const newBaby = createInitialBaby(babyName, signupGender, creatorName, avatar);
+       const newBaby = createInitialBaby(babyName, signupGender, creatorName, avatarPath);
        setBaby(newBaby);
        saveBaby(newBaby); 
        setCurrentUser(creatorName);
@@ -402,14 +401,10 @@ const App: React.FC = () => {
     
     deleteBaby(currentUser);
     
-    // Tenta gerar com Gemini, fallback para DiceBear
-    let avatar = await geminiService.generateBabyAvatar(rebirthGender);
-    if (!avatar) {
-       avatar = generateDiceBearAvatar(rebirthName + currentUser, rebirthGender);
-       alert("Usando avatar alternativo devido à alta demanda do servidor de IA.");
-    }
+    // Usando imagens estáticas locais
+    const avatarPath = getStaticAvatarPath(rebirthGender);
 
-    const newBaby = createInitialBaby(rebirthName, rebirthGender, currentUser, avatar);
+    const newBaby = createInitialBaby(rebirthName, rebirthGender, currentUser, avatarPath);
     
     setBaby(newBaby);
     saveBaby(newBaby);
