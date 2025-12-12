@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, Utensils, Moon, Bath, Milk, Zap } from 'lucide-react';
+import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, RefreshCw, Wand2, Utensils, Heart, Moon, Bath, Apple, Candy, Milk, Battery, Zap } from 'lucide-react';
 import Layout from './components/Layout';
 import Button from './components/Button';
 import Input from './components/Input';
@@ -98,464 +98,758 @@ const SignupView = ({
   signupGender, setSignupGender, 
   onCreate, onBack,
   isGenerating
-}: any) => {
-
-  const getGenderButtonStyle = (g: BabyGender) => {
-    const isSelected = signupGender === g;
-    return `flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
-      isSelected 
-        ? 'bg-orange-100 border-orange-400 text-orange-600 shadow-inner' 
-        : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50'
-    }`;
-  };
-
-  return (
-    <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
-      <div className="text-center mb-6">
-          <div className="inline-block p-2">
-              <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
-          </div>
-          <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
-          <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
-          </h1>
-          <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
-      </div>
-      <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
-        <Input 
-          placeholder="Escolha um Usuário" 
-          value={creatorName} 
-          onChange={e => setCreatorName(e.target.value)} 
-          disabled={isGenerating}
-        />
-        <Input 
-          placeholder="Escolha uma Senha" 
-          type="password"
-          value={signupPassword}
-          onChange={e => setSignupPassword(e.target.value)}
-          disabled={isGenerating}
-        />
-        <div className="py-1"></div>
-        <Input 
-          placeholder="Nome do seu Baby AI" 
-          value={babyName} 
-          onChange={e => setBabyName(e.target.value)} 
-          disabled={isGenerating}
-        />
-        <div>
-          <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
-          <div className="flex gap-2">
-            {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
-              <button
-                key={g}
-                onClick={() => !isGenerating && setSignupGender(g)}
-                disabled={isGenerating}
-                className={getGenderButtonStyle(g)}
-              >
-                {g}
-              </button>
-            ))}
-          </div>
+}: any) => (
+  <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
+    <div className="text-center mb-6">
+        <div className="inline-block p-2">
+            <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
         </div>
-      </div>
-      <div className="w-full max-w-xs space-y-3 pt-4 pb-2">
-        <Button fullWidth onClick={onCreate} disabled={isGenerating}>
-          {isGenerating ? "Criando... 🐣" : "Nascer Baby AI! 🐣"}
-        </Button>
-        <div className="flex justify-center">
-            <button onClick={onBack} disabled={isGenerating} className="text-gray-500 font-bold text-sm hover:underline">
-                Voltar para Login
+        <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
+        <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
+        </h1>
+        <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
+    </div>
+    <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
+      <Input 
+        placeholder="Escolha um Usuário" 
+        value={creatorName} 
+        onChange={e => setCreatorName(e.target.value)} 
+        disabled={isGenerating}
+      />
+      <Input 
+        placeholder="Escolha uma Senha" 
+        type="password"
+        value={signupPassword}
+        onChange={e => setSignupPassword(e.target.value)}
+        disabled={isGenerating}
+      />
+      <div className="py-1"></div>
+      <Input 
+        placeholder="Nome do seu Baby AI" 
+        value={babyName} 
+        onChange={e => setBabyName(e.target.value)} 
+        disabled={isGenerating}
+      />
+      <div>
+        <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
+        <div className="flex gap-2">
+          {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
+            <button
+              key={g}
+              onClick={() => !isGenerating && setSignupGender(g)}
+              disabled={isGenerating}
+              className={`flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
+                signupGender === g 
+                  ? 'bg-orange-500 text-white border-orange-700 transform scale-105' 
+                  : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              {g}
             </button>
+          ))}
         </div>
       </div>
     </div>
-  );
-};
+    <div className="w-full max-w-xs space-y-3 pt-2 mt-auto">
+      <Button fullWidth onClick={onCreate} variant="success" disabled={isGenerating}>
+        {isGenerating ? (
+           <span className="flex items-center gap-2">
+             <Wand2 className="animate-spin" size={18} /> Gerando visual único...
+           </span>
+        ) : 'Nascer Baby AI! 🐣'}
+      </Button>
+      <button 
+        onClick={onBack}
+        disabled={isGenerating}
+        className="w-full text-center text-gray-400 text-sm font-bold hover:text-gray-600"
+      >
+        Voltar para Login
+      </button>
+    </div>
+  </div>
+);
 
-const App = () => {
+// --- Main App Component ---
+
+const App: React.FC = () => {
+  // Global State
   const [view, setView] = useState<AppView>(AppView.LOGIN);
-  const [currentUser, setCurrentUser] = useState<string>('');
+  const [baby, setBaby] = useState<BabyState | null>(null);
+  const [currentUser, setCurrentUser] = useState<string>(''); // Track logged user
   
-  // Login State
+  // Audio State
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Form States
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [videoError, setVideoError] = useState(false);
-
+  
   // Signup State
   const [creatorName, setCreatorName] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [babyName, setBabyName] = useState('');
-  const [signupGender, setSignupGender] = useState<BabyGender>(BabyGender.NEUTRAL);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [signupGender, setSignupGender] = useState<BabyGender>(BabyGender.GIRL);
+  const [isGenerating, setIsGenerating] = useState(false); // New loading state
+  
+  // Video State
+  const [videoError, setVideoError] = useState(false);
+  
+  // Teaching State
+  const [teachTopic, setTeachTopic] = useState('');
+  const [teachContent, setTeachContent] = useState('');
+  const [isTeaching, setIsTeaching] = useState(false);
 
-  // Dashboard State
-  const [baby, setBaby] = useState<BabyState | null>(null);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Chat/Teach State
-  const [inputText, setInputText] = useState('');
+  // Chat State
+  const [chatMessage, setChatMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isChatting, setIsChatting] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Rebirth State
+  const [rebirthName, setRebirthName] = useState('');
+  const [rebirthGender, setRebirthGender] = useState<BabyGender>(BabyGender.NEUTRAL);
+
+  // Interaction State
+  const [isInteracting, setIsInteracting] = useState(false);
+
+  // Initialize - removed auto-load on mount because we need login now
   useEffect(() => {
-    audioRef.current = new Audio(musicSrc);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.3;
-    
-    return () => {
-      if(audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
+    // Only scroll chat if in chat view
   }, []);
 
+  // Update scroll on chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory, view]);
+
+  // Audio Control
   const toggleMusic = () => {
-    if(!audioRef.current) return;
-    if(isMusicPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(e => console.log("Audio play failed", e));
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.pause();
+        setIsMusicPlaying(false);
+      } else {
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => setIsMusicPlaying(true))
+            .catch((error) => {
+              console.log("Audio autoplay blocked or failed:", error);
+              // Do not set error state, let user try again by clicking
+              setIsMusicPlaying(false); 
+            });
+        }
+      }
     }
-    setIsMusicPlaying(!isMusicPlaying);
   };
 
-  const handleLogin = () => {
-    if(!username || !password) {
-      alert("Preencha usuário e senha!");
-      return;
+  const tryStartMusic = () => {
+    if (audioRef.current && !isMusicPlaying) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsMusicPlaying(true))
+          .catch(() => {
+              // Silently fail for autoplay, user can toggle manually
+          });
+      }
     }
-    if (validateUser(username, password)) {
+  };
+
+  // Actions
+  const handleLogin = () => {
+    if (!username || !password) {
+        alert("Por favor, digite usuário e senha.");
+        return;
+    }
+
+    const isValid = validateUser(username, password);
+    
+    if (isValid) {
+      tryStartMusic();
+      const savedBaby = loadBaby(username);
+      
       setCurrentUser(username);
-      const loadedBaby = loadBaby(username);
-      if (loadedBaby) {
-        setBaby(loadedBaby);
-        setChatHistory([]); // Reset chat on new session
+      if (savedBaby) {
+        setBaby(savedBaby);
         setView(AppView.DASHBOARD);
       } else {
-        alert("Nenhum Baby AI encontrado para este usuário. Crie um novo!");
-        // Optionally redirect to signup or keep them here to go to signup manually
+        // User exists but has no baby? Edge case, treat as new
+        alert("Usuário encontrado, mas sem Baby AI. Crie um novo.");
+        // Redirect to create baby logic or handle gracefully. 
+        // For now, let's assume if user exists they might have deleted baby.
+        setCreatorName(username);
+        setSignupPassword(password); 
+        setView(AppView.SIGNUP);
       }
     } else {
-      alert("Usuário ou senha incorretos (ou usuário não existe).");
+      alert("Usuário ou senha incorretos! Se não tem conta, cadastre-se.");
     }
   };
 
-  const handleGoToSignup = () => {
-    setCreatorName('');
-    setSignupPassword('');
-    setBabyName('');
-    setSignupGender(BabyGender.NEUTRAL);
-    setView(AppView.SIGNUP);
-  };
-
-  const handleSignupCreate = async () => {
-    if(!creatorName || !signupPassword || !babyName) {
-      alert("Preencha todos os campos!");
-      return;
+  const handleCreateBaby = async () => {
+    if (!creatorName || !babyName || !signupPassword) {
+        alert("Preencha todos os campos!");
+        return;
     }
     
-    setIsGenerating(true);
-    
-    // Register user first
-    if (!registerUser({ username: creatorName, password: signupPassword })) {
-      alert("Usuário já existe! Escolha outro nome.");
-      setIsGenerating(false);
+    // Register User first
+    const success = registerUser({ username: creatorName, password: signupPassword });
+    if (!success) {
+      alert("Este nome de usuário já existe. Tente outro.");
       return;
     }
 
-    // Generate Avatar
-    let avatar = undefined;
+    setIsGenerating(true); // Start loading avatar
+    tryStartMusic();
+
     try {
-      avatar = await geminiService.generateBabyAvatar(signupGender);
+       // Generate unique avatar
+       const avatar = await geminiService.generateBabyAvatar(signupGender);
+       
+       const newBaby = createInitialBaby(babyName, signupGender, creatorName, avatar);
+       setBaby(newBaby);
+       saveBaby(newBaby); 
+       setCurrentUser(creatorName);
+       setView(AppView.DASHBOARD);
     } catch (e) {
-      console.error("Avatar gen failed", e);
+       console.error("Error creating baby:", e);
+       alert("Erro ao criar o baby. Tente novamente.");
+    } finally {
+       setIsGenerating(false);
     }
+  };
 
-    const newBaby = createInitialBaby(babyName, signupGender, creatorName, avatar);
-    saveBaby(newBaby);
+  const handleTeach = async () => {
+    if (!baby || !teachTopic || !teachContent) return;
+    setIsTeaching(true);
+
+    const { reply, xpGained, memorySummary } = await geminiService.teachBaby(teachTopic, teachContent);
     
-    setBaby(newBaby);
-    setCurrentUser(creatorName);
-    setUsername(creatorName); // Sync for next login
-    setIsGenerating(false);
+    // Update baby state with new XP and Memory
+    const currentMemory = baby.memory || [];
+    const updatedMemory = memorySummary ? [...currentMemory, memorySummary] : currentMemory;
+
+    const updatedBaby: BabyState = {
+      ...baby,
+      xp: baby.xp + xpGained,
+      level: getLevelTitle(baby.xp + xpGained),
+      mood: 'Feliz',
+      memory: updatedMemory
+    };
+    
+    setBaby(updatedBaby);
+    saveBaby(updatedBaby);
+    
+    geminiService.speak(reply, updatedBaby.gender);
+
+    setTeachTopic('');
+    setTeachContent('');
+    setIsTeaching(false);
+    
+    let alertMsg = `Baby aprendeu! XP +${xpGained}\nBaby: "${reply}"`;
+    if (memorySummary) alertMsg += `\n(Guardado na memória)`;
+    alert(alertMsg);
+    
     setView(AppView.DASHBOARD);
   };
 
-  const handleLogout = () => {
-    setCurrentUser('');
-    setBaby(null);
-    setView(AppView.LOGIN);
-    setUsername('');
-    setPassword('');
-    setIsMusicPlaying(false);
-    if(audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-    }
-  };
-
-  const handleDelete = () => {
-    if(confirm("Tem certeza que quer dizer adeus? 😢 Isso não pode ser desfeito.")) {
-      deleteBaby(currentUser);
-      handleLogout();
-    }
-  };
-
-  // Chat & Teach Logic
-  const handleSendMessage = async () => {
-    if (!inputText.trim() || !baby) return;
+  const handleChat = async () => {
+    if (!baby || !chatMessage.trim()) return;
     
-    const text = inputText;
-    setInputText('');
-    setIsProcessing(true);
+    const newUserMsg: ChatMessage = { role: 'user', text: chatMessage, timestamp: Date.now() };
+    setChatHistory(prev => [...prev, newUserMsg]);
+    setChatMessage('');
+    setIsChatting(true);
 
-    if (view === AppView.CHAT) {
-        const newHistory: ChatMessage[] = [...chatHistory, { role: 'user', text, timestamp: Date.now() }];
-        setChatHistory(newHistory);
-        
-        // Convert internal chat history to Gemini format
-        const apiHistory = chatHistory.map(m => ({
-            role: m.role as 'user' | 'model',
-            text: m.text
-        }));
+    const responseText = await geminiService.chatWithBaby(
+      baby.name,
+      getAgeInDays(baby.birthDate),
+      baby.level,
+      chatHistory.map(m => ({ role: m.role, text: m.text })),
+      newUserMsg.text,
+      baby.memory || []
+    );
 
-        const reply = await geminiService.chatWithBaby(
-            baby.name, 
-            getAgeInDays(baby.birthDate), 
-            baby.level, 
-            apiHistory, 
-            text, 
-            baby.memory
+    const newAiMsg: ChatMessage = { role: 'model', text: responseText, timestamp: Date.now() };
+    setChatHistory(prev => [...prev, newAiMsg]);
+    setIsChatting(false);
+
+    geminiService.speak(responseText, baby.gender);
+  };
+
+  const handleRebirth = async () => {
+    if(!baby || !currentUser) return;
+    
+    deleteBaby(currentUser);
+    
+    const avatar = await geminiService.generateBabyAvatar(rebirthGender);
+    const newBaby = createInitialBaby(rebirthName, rebirthGender, currentUser, avatar);
+    
+    setBaby(newBaby);
+    saveBaby(newBaby);
+    setView(AppView.DASHBOARD);
+  };
+
+  const handleFeed = async (item: string, hungerRestore: number) => {
+    if (!baby) return;
+    setIsInteracting(true);
+    
+    const { reply } = await geminiService.reactToCareAction('feed', item, baby.name);
+    
+    const newHunger = Math.min(100, (baby.hunger || 50) + hungerRestore);
+    const newMood = newHunger > 80 ? 'Feliz' : 'Com fome';
+    
+    const updatedBaby: BabyState = {
+       ...baby,
+       hunger: newHunger,
+       mood: newMood as any,
+       xp: baby.xp + 5 // Small XP for care
+    };
+    setBaby(updatedBaby);
+    saveBaby(updatedBaby);
+    
+    geminiService.speak(reply, updatedBaby.gender);
+    alert(`${baby.name}: "${reply}"`);
+    setIsInteracting(false);
+    setView(AppView.DASHBOARD);
+  };
+
+  const handleCare = async (item: string, energyRestore: number, moodSet?: string) => {
+    if (!baby) return;
+    setIsInteracting(true);
+    
+    const { reply } = await geminiService.reactToCareAction('care', item, baby.name);
+    
+    const newEnergy = Math.min(100, (baby.energy || 50) + energyRestore);
+    
+    const updatedBaby: BabyState = {
+       ...baby,
+       energy: newEnergy,
+       mood: (moodSet || 'Feliz') as any,
+       xp: baby.xp + 5
+    };
+    setBaby(updatedBaby);
+    saveBaby(updatedBaby);
+    
+    geminiService.speak(reply, updatedBaby.gender);
+    alert(`${baby.name}: "${reply}"`);
+    setIsInteracting(false);
+    setView(AppView.DASHBOARD);
+  };
+
+  const appendVoiceText = (current: string, newText: string) => {
+    return current ? `${current} ${newText}` : newText;
+  };
+
+  // Render Logic
+  const renderContent = () => {
+    switch(view) {
+      case AppView.LOGIN:
+        return (
+          <LoginView 
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            onLogin={handleLogin}
+            onGoToSignup={() => setView(AppView.SIGNUP)}
+            videoError={videoError}
+            setVideoError={setVideoError}
+          />
         );
 
-        setChatHistory(prev => [...prev, { role: 'model', text: reply, timestamp: Date.now() }]);
-        
-        // Randomly gain a bit of XP from chatting
-        if (Math.random() > 0.7) {
-            updateBabyStats({ xp: baby.xp + 2, energy: Math.max(0, baby.energy - 2) });
-        }
+      case AppView.SIGNUP:
+        return (
+          <SignupView 
+            creatorName={creatorName}
+            setCreatorName={setCreatorName}
+            signupPassword={signupPassword}
+            setSignupPassword={setSignupPassword}
+            babyName={babyName}
+            setBabyName={setBabyName}
+            signupGender={signupGender}
+            setSignupGender={setSignupGender}
+            onCreate={handleCreateBaby}
+            onBack={() => setView(AppView.LOGIN)}
+            isGenerating={isGenerating}
+          />
+        );
 
-        // TTS
-        geminiService.speak(reply, baby.gender);
+      case AppView.FEED:
+        return (
+          <div className="flex flex-col h-full animate-fade-in space-y-4">
+             <div className="flex items-center gap-2 mb-2">
+                <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-orange-500 transition-colors">
+                  <ArrowLeft size={28} />
+                </button>
+                <h2 className="text-2xl font-display font-bold text-orange-500 flex items-center gap-2">
+                   <Utensils size={24} /> Hora do Lanche
+                </h2>
+             </div>
+             <p className="text-center text-gray-500 mb-4">O que vamos comer hoje?</p>
+             
+             <div className="grid grid-cols-2 gap-4 flex-1 overflow-y-auto p-2">
+                <button onClick={() => handleFeed('Leite', 10)} disabled={isInteracting} className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Milk className="text-blue-500 w-10 h-10" />
+                    <span className="font-bold text-blue-700">Leite</span>
+                    <span className="text-xs text-blue-400">+10 Fome</span>
+                </button>
+                <button onClick={() => handleFeed('Maçã', 15)} disabled={isInteracting} className="bg-red-50 hover:bg-red-100 border-2 border-red-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Apple className="text-red-500 w-10 h-10" />
+                    <span className="font-bold text-red-700">Maçã</span>
+                    <span className="text-xs text-red-400">+15 Fome</span>
+                </button>
+                <button onClick={() => handleFeed('Doce', 5)} disabled={isInteracting} className="bg-pink-50 hover:bg-pink-100 border-2 border-pink-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Candy className="text-pink-500 w-10 h-10" />
+                    <span className="font-bold text-pink-700">Doce</span>
+                    <span className="text-xs text-pink-400">+5 Fome</span>
+                </button>
+                <button onClick={() => handleFeed('Brócolis', 20)} disabled={isInteracting} className="bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <div className="text-4xl">🥦</div>
+                    <span className="font-bold text-green-700">Brócolis</span>
+                    <span className="text-xs text-green-400">+20 Fome</span>
+                </button>
+             </div>
+             {isInteracting && <p className="text-center text-orange-500 font-bold animate-pulse">Nham nham...</p>}
+          </div>
+        );
 
-    } else if (view === AppView.TEACH) {
-        const { reply, xpGained, memorySummary } = await geminiService.teachBaby(text, text); // Using text as topic and content for simplicity in this UI
-        
-        // Update Baby
-        const newMemory = memorySummary ? [...baby.memory, memorySummary] : baby.memory;
-        updateBabyStats({ xp: baby.xp + xpGained, memory: newMemory, energy: Math.max(0, baby.energy - 5) });
-        
-        setChatHistory([{ role: 'model', text: reply, timestamp: Date.now() }]); // Just show the feedback
-        geminiService.speak(reply, baby.gender);
+      case AppView.CARE:
+        return (
+          <div className="flex flex-col h-full animate-fade-in space-y-4">
+             <div className="flex items-center gap-2 mb-2">
+                <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-purple-500 transition-colors">
+                  <ArrowLeft size={28} />
+                </button>
+                <h2 className="text-2xl font-display font-bold text-purple-500 flex items-center gap-2">
+                   <Heart size={24} /> Hora de Cuidar
+                </h2>
+             </div>
+             <p className="text-center text-gray-500 mb-4">O que seu baby precisa?</p>
+             
+             <div className="grid grid-cols-2 gap-4 flex-1 overflow-y-auto p-2">
+                <button onClick={() => handleCare('Banho', 20, 'Limpinho')} disabled={isInteracting} className="bg-cyan-50 hover:bg-cyan-100 border-2 border-cyan-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Bath className="text-cyan-500 w-10 h-10" />
+                    <span className="font-bold text-cyan-700">Banho</span>
+                    <span className="text-xs text-cyan-400">+20 Energia</span>
+                </button>
+                <button onClick={() => handleCare('Dormir', 50, 'Cheio de Energia')} disabled={isInteracting} className="bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Moon className="text-indigo-500 w-10 h-10" />
+                    <span className="font-bold text-indigo-700">Dormir</span>
+                    <span className="text-xs text-indigo-400">+50 Energia</span>
+                </button>
+                <button onClick={() => handleCare('Carinho', 10, 'Amado')} disabled={isInteracting} className="col-span-2 bg-pink-50 hover:bg-pink-100 border-2 border-pink-200 rounded-2xl p-4 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+                    <Heart className="text-pink-500 w-10 h-10" />
+                    <span className="font-bold text-pink-700">Carinho</span>
+                    <span className="text-xs text-pink-400">+10 Amor</span>
+                </button>
+             </div>
+             {isInteracting && <p className="text-center text-purple-500 font-bold animate-pulse">Cuidando com amor...</p>}
+          </div>
+        );
+
+      case AppView.DASHBOARD:
+        return (
+          <div className="flex flex-col h-full space-y-4 animate-fade-in overflow-hidden">
+            {/* Header: Level and Logout */}
+            <div className="flex justify-between items-center bg-white/50 p-2 rounded-2xl border border-white/60 shadow-sm">
+               <div className="flex items-center gap-2">
+                 <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
+                   {baby?.level.charAt(0)}
+                 </div>
+                 <div className="flex flex-col">
+                   <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Nível</span>
+                   <span className="text-sm font-bold text-gray-700">{baby?.level}</span>
+                 </div>
+               </div>
+               <button onClick={() => setView(AppView.LOGIN)} className="p-2 text-gray-400 hover:text-red-500 transition-colors bg-white rounded-xl shadow-sm hover:shadow-md">
+                 <LogOut size={18} />
+               </button>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-thin">
+              
+              {/* Baby Avatar Section */}
+              <div className="flex flex-col items-center justify-center py-2 relative">
+                <LogoWithParticles videoError={videoError} setVideoError={setVideoError} customImage={baby?.avatarImage} />
+                <h2 className="text-3xl font-display font-bold text-gray-800 mt-2">{baby?.name}</h2>
+                <div className="flex gap-2 mt-1">
+                   <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+                     {getAgeInDays(baby?.birthDate || 0)} dias
+                   </span>
+                   <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                     <Brain size={12} /> {baby?.xp} XP
+                   </span>
+                </div>
+                <div className="mt-2 bg-white/80 px-4 py-1 rounded-full text-sm text-gray-600 font-medium shadow-sm border border-orange-100">
+                   Status: <span className="text-orange-500 font-bold">{baby?.mood}</span>
+                </div>
+              </div>
+
+              {/* Status Bars */}
+              <div className="grid grid-cols-2 gap-3">
+                 <div className="bg-white/60 p-3 rounded-2xl border border-white shadow-sm flex flex-col gap-1">
+                    <div className="flex justify-between text-xs font-bold text-gray-500">
+                       <span className="flex items-center gap-1"><Utensils size={12}/> Fome</span>
+                       <span>{baby?.hunger || 50}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                       <div 
+                         className="h-full bg-gradient-to-r from-orange-300 to-green-400 transition-all duration-500" 
+                         style={{ width: `${baby?.hunger || 50}%` }}
+                       />
+                    </div>
+                 </div>
+                 <div className="bg-white/60 p-3 rounded-2xl border border-white shadow-sm flex flex-col gap-1">
+                    <div className="flex justify-between text-xs font-bold text-gray-500">
+                       <span className="flex items-center gap-1"><Zap size={12}/> Energia</span>
+                       <span>{baby?.energy || 80}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                       <div 
+                         className="h-full bg-gradient-to-r from-blue-300 to-purple-400 transition-all duration-500" 
+                         style={{ width: `${baby?.energy || 80}%` }}
+                       />
+                    </div>
+                 </div>
+              </div>
+
+              {/* Action Buttons Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={() => setView(AppView.TEACH)}
+                  className="bg-gradient-to-br from-indigo-50 to-white p-4 rounded-2xl border-b-4 border-indigo-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group"
+                >
+                  <BookOpen className="w-8 h-8 text-indigo-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-left">
+                    <span className="block font-bold text-gray-700">Ensinar</span>
+                    <span className="text-xs text-gray-400">Ganhar XP</span>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setView(AppView.CHAT)}
+                  className="bg-gradient-to-br from-pink-50 to-white p-4 rounded-2xl border-b-4 border-pink-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group"
+                >
+                  <MessageCircle className="w-8 h-8 text-pink-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-left">
+                    <span className="block font-bold text-gray-700">Conversar</span>
+                    <span className="text-xs text-gray-400">Interagir</span>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setView(AppView.FEED)}
+                  className="bg-gradient-to-br from-orange-50 to-white p-4 rounded-2xl border-b-4 border-orange-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group"
+                >
+                  <Utensils className="w-8 h-8 text-orange-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-left">
+                    <span className="block font-bold text-gray-700">Alimentar</span>
+                    <span className="text-xs text-gray-400">Dar comidinha</span>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setView(AppView.CARE)}
+                  className="bg-gradient-to-br from-teal-50 to-white p-4 rounded-2xl border-b-4 border-teal-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group"
+                >
+                  <Heart className="w-8 h-8 text-teal-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-left">
+                    <span className="block font-bold text-gray-700">Cuidar</span>
+                    <span className="text-xs text-gray-400">Banho e sono</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="pt-2">
+                 <button 
+                    onClick={() => setView(AppView.REBIRTH)} 
+                    className="w-full py-2 text-xs font-bold text-gray-400 hover:text-purple-600 flex items-center justify-center gap-1 transition-colors"
+                 >
+                    <RefreshCw size={12} /> Reiniciar Vida (Rebirth)
+                 </button>
+              </div>
+
+            </div>
+          </div>
+        );
+
+      case AppView.TEACH:
+        return (
+          <div className="flex flex-col h-full animate-fade-in">
+             <div className="flex items-center gap-2 mb-4">
+                <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-indigo-600 transition-colors">
+                  <ArrowLeft size={28} />
+                </button>
+                <h2 className="text-2xl font-display font-bold text-indigo-600 flex items-center gap-2">
+                   <BookOpen size={24} /> Ensinar
+                </h2>
+             </div>
+             <p className="text-gray-500 text-sm mb-6 bg-white/50 p-3 rounded-xl">
+               Ensine algo novo para o {baby?.name}! Se ele gostar, vai ganhar XP e ficar mais inteligente.
+             </p>
+             <div className="space-y-4 flex-1">
+                <Input 
+                  placeholder="Tópico (ex: Cores, Animais)" 
+                  value={teachTopic}
+                  onChange={(e) => setTeachTopic(e.target.value)}
+                  className="bg-white"
+                />
+                <div className="relative">
+                  <textarea 
+                    className="w-full h-32 bg-white border-2 border-orange-200 rounded-xl p-4 text-gray-700 focus:outline-none focus:border-orange-500 resize-none font-medium placeholder-gray-400"
+                    placeholder="Explique aqui..."
+                    value={teachContent}
+                    onChange={(e) => setTeachContent(e.target.value)}
+                  />
+                  <MicButton 
+                    onResult={(text) => setTeachContent((prev) => appendVoiceText(prev, text))}
+                    className="absolute right-2 bottom-2"
+                  />
+                </div>
+             </div>
+             <div className="mt-auto pt-4">
+                <Button fullWidth onClick={handleTeach} disabled={isTeaching || !teachTopic || !teachContent}>
+                  {isTeaching ? <span className="animate-pulse">Aprendendo...</span> : 'Ensinar Baby AI 🎓'}
+                </Button>
+             </div>
+          </div>
+        );
+
+      case AppView.CHAT:
+        return (
+          <div className="flex flex-col h-full animate-fade-in">
+             {/* Header */}
+             <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-pink-600 transition-colors">
+                    <ArrowLeft size={24} />
+                  </button>
+                  <div className="flex flex-col">
+                    <h2 className="text-xl font-display font-bold text-pink-600">Chat</h2>
+                    <span className="text-xs text-gray-400 font-bold">com {baby?.name}</span>
+                  </div>
+                </div>
+                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-200">
+                    <img src={baby?.avatarImage || "https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg"} alt="avatar" className="w-full h-full object-cover" />
+                </div>
+             </div>
+
+             {/* Messages Area */}
+             <div className="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 scrollbar-thin">
+                {chatHistory.length === 0 && (
+                   <div className="text-center text-gray-400 mt-10 text-sm">
+                      Diga "Oi" para começar! 👋
+                   </div>
+                )}
+                {chatHistory.map((msg, idx) => (
+                  <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm font-medium shadow-sm ${
+                       msg.role === 'user' 
+                         ? 'bg-purple-600 text-white rounded-tr-none' 
+                         : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
+                     }`}>
+                        {msg.text}
+                     </div>
+                  </div>
+                ))}
+                {isChatting && (
+                   <div className="flex justify-start">
+                     <div className="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms'}}></div>
+                        </div>
+                     </div>
+                   </div>
+                )}
+                <div ref={chatEndRef} />
+             </div>
+
+             {/* Input Area */}
+             <div className="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 flex gap-2 items-center">
+                <div className="relative flex-1">
+                   <input 
+                     className="w-full bg-gray-50 rounded-xl py-3 pl-3 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                     placeholder="Digite sua mensagem..."
+                     value={chatMessage}
+                     onChange={e => setChatMessage(e.target.value)}
+                     onKeyDown={e => e.key === 'Enter' && handleChat()}
+                   />
+                   <div className="absolute right-1 top-1/2 -translate-y-1/2">
+                      <MicButton 
+                        onResult={(text) => setChatMessage((prev) => appendVoiceText(prev, text))}
+                        className="scale-75 origin-right"
+                      />
+                   </div>
+                </div>
+                <button 
+                  onClick={handleChat}
+                  disabled={!chatMessage.trim() || isChatting}
+                  className="bg-pink-500 text-white p-3 rounded-xl hover:bg-pink-600 disabled:opacity-50 transition-colors shadow-sm"
+                >
+                  <Send size={18} />
+                </button>
+             </div>
+          </div>
+        );
+
+      case AppView.REBIRTH:
+        return (
+          <div className="flex flex-col h-full animate-fade-in justify-center items-center text-center p-4">
+             <Sparkles className="text-yellow-400 w-16 h-16 mb-4 animate-spin-slow" />
+             <h2 className="text-2xl font-display font-bold text-purple-700 mb-2">Renascimento</h2>
+             <p className="text-gray-600 text-sm mb-8">
+               Seu baby atual será deletado e um novo nascerá. Todo o progresso será perdido. Tem certeza?
+             </p>
+             
+             <div className="w-full max-w-xs space-y-4">
+                <Input 
+                   placeholder="Novo Nome"
+                   value={rebirthName}
+                   onChange={e => setRebirthName(e.target.value)}
+                />
+                <div className="flex gap-2 justify-center">
+                  {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
+                    <button
+                      key={g}
+                      onClick={() => setRebirthGender(g)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold border-b-4 transition-all ${
+                        rebirthGender === g 
+                          ? 'bg-purple-500 text-white border-purple-700' 
+                          : 'bg-white text-gray-500 border-gray-200'
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+                <Button fullWidth variant="danger" onClick={handleRebirth}>
+                   Confirmar Renascimento
+                </Button>
+                <button 
+                   onClick={() => setView(AppView.DASHBOARD)}
+                   className="text-gray-400 text-sm font-bold hover:text-gray-600 underline"
+                >
+                   Cancelar
+                </button>
+             </div>
+          </div>
+        );
+
+      default:
+        return <div>View not found</div>;
     }
-
-    setIsProcessing(false);
   };
-
-  const updateBabyStats = (updates: Partial<BabyState>) => {
-      if(!baby) return;
-      const updatedBaby = { ...baby, ...updates };
-      
-      // Check level up
-      const oldTitle = getLevelTitle(baby.xp);
-      const newTitle = getLevelTitle(updatedBaby.xp);
-      if (oldTitle !== newTitle) {
-          updatedBaby.level = newTitle;
-          alert(`Parabéns! ${baby.name} evoluiu para ${newTitle}! 🎉`);
-      }
-
-      setBaby(updatedBaby);
-      saveBaby(updatedBaby);
-  };
-
-  const handleCare = async (action: 'feed' | 'bath' | 'sleep' | 'play') => {
-      if(!baby) return;
-      setIsProcessing(true);
-      
-      let reply = "";
-      let updates: Partial<BabyState> = {};
-      
-      switch(action) {
-          case 'feed':
-              updates = { hunger: Math.min(100, baby.hunger + 30), mood: 'Feliz' };
-              const feedRes = await geminiService.reactToCareAction('feed', 'Leite Quentinho', baby.name);
-              reply = feedRes.reply;
-              break;
-          case 'bath':
-              updates = { mood: 'Limpinho', energy: Math.min(100, baby.energy + 10) };
-              const bathRes = await geminiService.reactToCareAction('care', 'Banho de Espuma', baby.name);
-              reply = bathRes.reply;
-              break;
-          case 'sleep':
-              updates = { energy: 100, mood: 'Sonolento' };
-              const sleepRes = await geminiService.reactToCareAction('care', 'Dormir', baby.name);
-              reply = sleepRes.reply;
-              break;
-          case 'play':
-              updates = { energy: Math.max(0, baby.energy - 20), mood: 'Cheio de Energia', xp: baby.xp + 5 };
-              const playRes = await geminiService.reactToCareAction('care', 'Brincar', baby.name);
-              reply = playRes.reply;
-              break;
-      }
-      
-      updateBabyStats(updates);
-      setChatHistory([{ role: 'model', text: reply, timestamp: Date.now() }]);
-      geminiService.speak(reply, baby.gender);
-      setIsProcessing(false);
-  };
-
-  // --- Render Views ---
-
-  if (view === AppView.LOGIN) {
-    return (
-      <Layout isMusicPlaying={isMusicPlaying} toggleMusic={toggleMusic}>
-        <LoginView 
-          username={username} setUsername={setUsername}
-          password={password} setPassword={setPassword}
-          onLogin={handleLogin}
-          onGoToSignup={handleGoToSignup}
-          videoError={videoError} setVideoError={setVideoError}
-        />
-      </Layout>
-    );
-  }
-
-  if (view === AppView.SIGNUP) {
-    return (
-      <Layout isMusicPlaying={isMusicPlaying} toggleMusic={toggleMusic}>
-        <SignupView 
-          creatorName={creatorName} setCreatorName={setCreatorName}
-          signupPassword={signupPassword} setSignupPassword={setSignupPassword}
-          babyName={babyName} setBabyName={setBabyName}
-          signupGender={signupGender} setSignupGender={setSignupGender}
-          onCreate={handleSignupCreate}
-          onBack={() => setView(AppView.LOGIN)}
-          isGenerating={isGenerating}
-        />
-      </Layout>
-    );
-  }
-
-  // Dashboard / Chat / Teach Views
-  if (!baby) return null; // Should not happen
 
   return (
     <Layout isMusicPlaying={isMusicPlaying} toggleMusic={toggleMusic}>
-       {/* Header with Stats */}
-       <div className="flex items-center justify-between mb-4 bg-white/50 p-3 rounded-2xl border border-white shadow-sm">
-          <div className="flex items-center gap-2">
-             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-orange-300">
-                {baby.avatarImage 
-                  ? <img src={baby.avatarImage} className="w-full h-full object-cover" alt="avatar" />
-                  : <div className="w-full h-full bg-orange-100 flex items-center justify-center">👶</div>
-                }
-             </div>
-             <div>
-                <h2 className="font-bold text-gray-800 leading-tight">{baby.name}</h2>
-                <p className="text-xs text-gray-500">{getAgeInDays(baby.birthDate)} dias • {baby.level}</p>
-             </div>
-          </div>
-          <div className="flex flex-col items-end text-xs font-medium text-gray-600 gap-1">
-             <div className="flex items-center gap-1"><Brain size={12} className="text-purple-500"/> {baby.xp} XP</div>
-             <div className="flex items-center gap-1"><Zap size={12} className="text-yellow-500"/> {baby.energy}%</div>
-             <div className="flex items-center gap-1"><Utensils size={12} className="text-green-500"/> {baby.hunger}%</div>
-          </div>
-       </div>
-
-       {/* Main Content Area */}
-       <div className="flex-1 overflow-y-auto mb-4 relative rounded-2xl bg-white/40 border border-white p-4 shadow-inner scrollbar-thin">
-          
-          {view === AppView.DASHBOARD && (
-             <div className="grid grid-cols-2 gap-3 h-full content-center">
-                 <button onClick={() => setView(AppView.CHAT)} className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded-2xl hover:bg-blue-200 transition-colors gap-2">
-                    <MessageCircle size={32} className="text-blue-500" />
-                    <span className="font-bold text-blue-700">Conversar</span>
-                 </button>
-                 <button onClick={() => setView(AppView.TEACH)} className="flex flex-col items-center justify-center p-4 bg-purple-100 rounded-2xl hover:bg-purple-200 transition-colors gap-2">
-                    <BookOpen size={32} className="text-purple-500" />
-                    <span className="font-bold text-purple-700">Ensinar</span>
-                 </button>
-                 
-                 {/* Care Actions Grid */}
-                 <button onClick={() => handleCare('feed')} className="flex flex-col items-center justify-center p-4 bg-green-100 rounded-2xl hover:bg-green-200 transition-colors gap-2">
-                    <Milk size={32} className="text-green-500" />
-                    <span className="font-bold text-green-700">Alimentar</span>
-                 </button>
-                 <button onClick={() => handleCare('bath')} className="flex flex-col items-center justify-center p-4 bg-cyan-100 rounded-2xl hover:bg-cyan-200 transition-colors gap-2">
-                    <Bath size={32} className="text-cyan-500" />
-                    <span className="font-bold text-cyan-700">Banho</span>
-                 </button>
-                 <button onClick={() => handleCare('play')} className="flex flex-col items-center justify-center p-4 bg-yellow-100 rounded-2xl hover:bg-yellow-200 transition-colors gap-2">
-                    <Sparkles size={32} className="text-yellow-500" />
-                    <span className="font-bold text-yellow-700">Brincar</span>
-                 </button>
-                 <button onClick={() => handleCare('sleep')} className="flex flex-col items-center justify-center p-4 bg-indigo-100 rounded-2xl hover:bg-indigo-200 transition-colors gap-2">
-                    <Moon size={32} className="text-indigo-500" />
-                    <span className="font-bold text-indigo-700">Dormir</span>
-                 </button>
-             </div>
-          )}
-
-          {(view === AppView.CHAT || view === AppView.TEACH) && (
-              <div className="flex flex-col gap-3 min-h-full justify-end">
-                  {chatHistory.length === 0 && (
-                      <div className="text-center text-gray-400 my-auto">
-                          <p className="text-4xl mb-2">👶</p>
-                          <p>{view === AppView.CHAT ? "Fale algo para começar!" : "O que vamos aprender hoje?"}</p>
-                      </div>
-                  )}
-                  {chatHistory.map((msg, idx) => (
-                      <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-blue-500 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-700 rounded-tl-none'}`}>
-                              {msg.text}
-                          </div>
-                      </div>
-                  ))}
-                  {isProcessing && (
-                      <div className="flex justify-start">
-                          <div className="bg-white border border-gray-200 px-4 py-2 rounded-2xl rounded-tl-none flex gap-1">
-                              <span className="animate-bounce">.</span><span className="animate-bounce delay-75">.</span><span className="animate-bounce delay-150">.</span>
-                          </div>
-                      </div>
-                  )}
-              </div>
-          )}
-       </div>
-
-       {/* Bottom Controls */}
-       {view === AppView.DASHBOARD ? (
-           <div className="flex gap-2">
-              <Button fullWidth variant="danger" onClick={handleLogout} className="!py-2 text-sm">
-                  <LogOut size={16} /> Sair
-              </Button>
-              <button onClick={handleDelete} className="px-4 text-red-300 hover:text-red-500 text-xs">
-                  Deletar
-              </button>
-           </div>
-       ) : (
-           <div className="flex gap-2 items-center">
-               <button onClick={() => setView(AppView.DASHBOARD)} className="p-3 bg-gray-200 rounded-xl text-gray-600 hover:bg-gray-300">
-                   <ArrowLeft size={20} />
-               </button>
-               <div className="flex-1 relative">
-                   <Input 
-                      placeholder={view === AppView.CHAT ? "Converse com o baby..." : "Ensine algo novo..."}
-                      value={inputText}
-                      onChange={e => setInputText(e.target.value)}
-                      onKeyPress={e => e.key === 'Enter' && handleSendMessage()}
-                      className="!py-2 !text-sm"
-                      rightElement={
-                          <MicButton onResult={txt => setInputText(txt)} className="scale-75" />
-                      }
-                   />
-               </div>
-               <button onClick={handleSendMessage} disabled={isProcessing} className="p-3 bg-blue-500 rounded-xl text-white hover:bg-blue-600 disabled:opacity-50">
-                   <Send size={20} />
-               </button>
-           </div>
-       )}
-
+       <audio ref={audioRef} src={musicSrc} loop />
+       {renderContent()}
     </Layout>
   );
 };

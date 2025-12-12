@@ -44,38 +44,7 @@ export class GeminiService {
   private audioContext: AudioContext | null = null;
 
   constructor() {
-    // Robust API Key Retrieval for Vercel/Vite
-    // Priority:
-    // 1. process.env.API_KEY (Node/Webpack standard)
-    // 2. import.meta.env.VITE_API_KEY (Vite standard)
-    // 3. import.meta.env.API_KEY (Fallback if user named it API_KEY)
-    
-    let apiKey = '';
-    
-    // Check process.env first
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      apiKey = process.env.API_KEY;
-    }
-    
-    // Check Vite env vars if not found yet
-    if (!apiKey) {
-      try {
-         // @ts-ignore
-         const env = import.meta && import.meta.env;
-         if (env) {
-            // @ts-ignore
-            apiKey = env.VITE_API_KEY || env.API_KEY || '';
-         }
-      } catch(e) {
-        // Ignore errors if import.meta is not available
-      }
-    }
-    
-    if (!apiKey) {
-        console.warn("API Key missing. Please set VITE_API_KEY or API_KEY in your environment.");
-    }
-
-    this.ai = new GoogleGenAI({ apiKey });
+    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   }
 
   // Reuse AudioContext to prevent "Max AudioContexts reached" error

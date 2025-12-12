@@ -41,12 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children, isMusicPlaying, toggleMusic }
           )}
         </button>
 
-        {/* 
-            Content Area
-            Added pt-20 (80px) to clear the top button (top-6 + h-12 approx 72px) 
-            Adjusted horizontal padding for better mobile fit
-        */}
-        <div className="flex-1 px-5 pb-5 pt-20 flex flex-col relative z-10 overflow-hidden">
+        <div className="flex-1 p-8 flex flex-col relative z-10 overflow-hidden">
            {children}
         </div>
         
