@@ -9,7 +9,7 @@ import { saveBaby, loadBaby, createInitialBaby, deleteBaby, validateUser, regist
 import { geminiService } from './services/geminiService';
 import { getLevelTitle, getAgeInDays } from './constants';
 
-const musicSrc = "https://cdn.pixabay.com/audio/2022/10/18/audio_31c2730e64.mp3";
+const musicSrc = "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3?filename=playful-kitten-113116.mp3"; // Reliable Happy Kids Music
 
 // --- Extracted Components to prevent re-render focus loss ---
 
@@ -248,13 +248,13 @@ const App: React.FC = () => {
         audioRef.current.pause();
         setIsMusicPlaying(false);
       } else {
+        audioRef.current.volume = 0.4;
         const playPromise = audioRef.current.play();
         if (playPromise !== undefined) {
           playPromise
             .then(() => setIsMusicPlaying(true))
             .catch((error) => {
-              console.log("Audio autoplay blocked or failed:", error);
-              // Do not set error state, let user try again by clicking
+              console.log("Audio play failed:", error);
               setIsMusicPlaying(false); 
             });
         }
@@ -264,12 +264,13 @@ const App: React.FC = () => {
 
   const tryStartMusic = () => {
     if (audioRef.current && !isMusicPlaying) {
+      audioRef.current.volume = 0.4;
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => setIsMusicPlaying(true))
-          .catch(() => {
-              // Silently fail for autoplay, user can toggle manually
+          .catch((error) => {
+             console.log("Autoplay blocked, waiting for interaction", error);
           });
       }
     }
@@ -878,7 +879,7 @@ const App: React.FC = () => {
   return (
     <Layout isMusicPlaying={isMusicPlaying} toggleMusic={toggleMusic}>
       {renderContent()}
-      <audio ref={audioRef} src={musicSrc} loop />
+      <audio ref={audioRef} src={musicSrc} loop playsInline crossOrigin="anonymous" />
     </Layout>
   );
 };

@@ -279,6 +279,16 @@ export class GeminiService {
 
   // TTS
   async speak(text: string, gender: string): Promise<void> {
+    // Voz Robotizada para Neutro (Fallback do navegador)
+    if (gender === 'Neutro') {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pt-BR';
+        utterance.pitch = 0.5; // Pitch baixo para efeito robótico
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+        return;
+    }
+
     try {
         const voiceName = gender === 'Menino' ? 'Puck' : 'Kore'; 
 
@@ -309,10 +319,11 @@ export class GeminiService {
         }
 
     } catch (error) {
-        console.error("TTS Error:", error);
+        console.error("TTS Error (Gemini fail, using fallback):", error);
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'pt-BR';
-        utterance.pitch = 1.2;
+        // Ajuste de tom para fallback do navegador
+        utterance.pitch = gender === 'Menino' ? 1.2 : 1.4; // Vozes mais agudas para bebês
         utterance.rate = 1.1;
         window.speechSynthesis.speak(utterance);
     }
