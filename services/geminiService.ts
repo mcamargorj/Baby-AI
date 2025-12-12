@@ -44,26 +44,29 @@ export class GeminiService {
   private audioContext: AudioContext | null = null;
 
   constructor() {
-    // Robust API Key Retrieval for Vercel/Vite
-    // 1. Check standard process.env (Node/Webpack)
-    // 2. Check import.meta.env (Vite standard)
-    // 3. Fallback to empty string to prevent constructor crash (will fail on first call if empty)
-    
     let apiKey = '';
     
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      apiKey = process.env.API_KEY;
-    } else {
-      // @ts-ignore - Handle Vite specific env var if process.env is missing
-      try {
-         // @ts-ignore
-         if (import.meta && import.meta.env && import.meta.env.API_KEY) {
+    // --- Lógica de Recuperação de Chave Robusta para Vercel/Vite ---
+    
+    // 1. Tenta pegar via import.meta.env (Padrão Vite)
+    // No Vercel, a variável DEVE se chamar VITE_API_KEY para ser exposta ao cliente
+    try {
+        // @ts-ignore
+        if (typeof import.meta !== 'undefined' && import.meta.env) {
             // @ts-ignore
-            apiKey = import.meta.env.API_KEY;
-         }
-      } catch(e) {
-        // Ignore errors if import.meta is not available
-      }
+            apiKey = import.meta.env.VITE_API_KEY || import.meta.env.API_KEY || '';
+        }
+    } catch(e) {
+        // Ignora erros se import.meta não existir
+    }
+
+    // 2. Fallback para process.env (Node/Webpack ou defines do Vite)
+    if (!apiKey && typeof process !== 'undefined' && process.env) {
+      apiKey = process.env.VITE_API_KEY || process.env.API_KEY || '';
+    }
+    
+    if (!apiKey) {
+      console.warn("⚠️ AVISO: API Key não encontrada. Configure a variável de ambiente 'VITE_API_KEY' no Vercel.");
     }
     
     this.ai = new GoogleGenAI({ apiKey });
