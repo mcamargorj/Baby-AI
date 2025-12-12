@@ -57,9 +57,9 @@ export class GeminiService {
       // @ts-ignore - Handle Vite specific env var if process.env is missing
       try {
          // @ts-ignore
-         if (import.meta && import.meta.env && import.meta.env.VITE_API_KEY) {
+         if (import.meta && import.meta.env && import.meta.env.API_KEY) {
             // @ts-ignore
-            apiKey = import.meta.env.VITE_API_KEY;
+            apiKey = import.meta.env.API_KEY;
          }
       } catch(e) {
         // Ignore errors if import.meta is not available
