@@ -13,47 +13,64 @@ const musicSrc = "https://cdn.pixabay.com/audio/2022/10/18/audio_31c2730e64.mp3"
 
 // --- Extracted Components to prevent re-render focus loss ---
 
-const LogoWithParticles = ({ videoError, setVideoError, customImage }: { videoError: boolean, setVideoError: (e: boolean) => void, customImage?: string }) => (
-  <div className="relative w-44 h-44 flex items-center justify-center my-4">
-      <div className="particle-ring" style={{ animationDuration: '10s' }}>
-          <div className="particle-dot bg-blue-400" style={{ top: '0%', left: '50%' }}></div>
-          <div className="particle-dot bg-green-400" style={{ top: '15%', left: '85%' }}></div>
-          <div className="particle-dot bg-yellow-400" style={{ top: '50%', left: '100%', transform: 'translate(-50%, -50%)' }}></div>
-          <div className="particle-dot bg-orange-400" style={{ top: '85%', left: '85%' }}></div>
-          <div className="particle-dot bg-red-400" style={{ top: '100%', left: '50%', transform: 'translate(-50%, -100%)' }}></div>
-          <div className="particle-dot bg-pink-400" style={{ top: '85%', left: '15%' }}></div>
-          <div className="particle-dot bg-purple-400" style={{ top: '50%', left: '0%', transform: 'translate(-50%, -50%)' }}></div>
-          <div className="particle-dot bg-indigo-400" style={{ top: '15%', left: '15%' }}></div>
-      </div>
-      <div className="absolute inset-2 rounded-full bg-gradient-to-tr from-blue-200 via-purple-200 to-pink-200 blur-sm"></div>
-      <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-inner bg-black z-10">
-          {customImage ? (
-             <img 
-               src={customImage} 
-               alt="Baby Avatar" 
-               className="w-full h-full object-cover"
-             />
-          ) : !videoError ? (
-              <video 
-              src="https://babyai.pythonanywhere.com/static/baby_ai.mp4" 
-              className="w-full h-full object-cover"
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              onError={() => setVideoError(true)}
-              />
-          ) : (
-              // Fallback estático final caso tudo falhe
-              <img 
-              src="https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg?w=740&t=st=1709400000~exp=1709400600~hmac=6e5c898" 
-              alt="Baby AI Logo" 
-              className="w-full h-full rounded-full object-cover"
-              />
-          )}
-      </div>
-  </div>
-);
+const LogoWithParticles = ({ videoError, setVideoError, customImage }: { videoError: boolean, setVideoError: (e: boolean) => void, customImage?: string }) => {
+  const isVideo = customImage?.endsWith('.mp4');
+
+  return (
+    <div className="relative w-44 h-44 flex items-center justify-center my-4">
+        <div className="particle-ring" style={{ animationDuration: '10s' }}>
+            <div className="particle-dot bg-blue-400" style={{ top: '0%', left: '50%' }}></div>
+            <div className="particle-dot bg-green-400" style={{ top: '15%', left: '85%' }}></div>
+            <div className="particle-dot bg-yellow-400" style={{ top: '50%', left: '100%', transform: 'translate(-50%, -50%)' }}></div>
+            <div className="particle-dot bg-orange-400" style={{ top: '85%', left: '85%' }}></div>
+            <div className="particle-dot bg-red-400" style={{ top: '100%', left: '50%', transform: 'translate(-50%, -100%)' }}></div>
+            <div className="particle-dot bg-pink-400" style={{ top: '85%', left: '15%' }}></div>
+            <div className="particle-dot bg-purple-400" style={{ top: '50%', left: '0%', transform: 'translate(-50%, -50%)' }}></div>
+            <div className="particle-dot bg-indigo-400" style={{ top: '15%', left: '15%' }}></div>
+        </div>
+        <div className="absolute inset-2 rounded-full bg-gradient-to-tr from-blue-200 via-purple-200 to-pink-200 blur-sm"></div>
+        <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-inner bg-black z-10">
+            {customImage ? (
+               isVideo ? (
+                 <video 
+                   src={customImage} 
+                   className="w-full h-full object-cover"
+                   autoPlay 
+                   loop 
+                   muted 
+                   playsInline
+                   onError={() => setVideoError(true)}
+                 />
+               ) : (
+                 <img 
+                   src={customImage} 
+                   alt="Baby Avatar" 
+                   className="w-full h-full object-cover"
+                   onError={() => setVideoError(true)}
+                 />
+               )
+            ) : !videoError ? (
+                <video 
+                src="https://babyai.pythonanywhere.com/static/baby_ai.mp4" 
+                className="w-full h-full object-cover"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                onError={() => setVideoError(true)}
+                />
+            ) : (
+                // Fallback estático final caso tudo falhe
+                <img 
+                src="https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg" 
+                alt="Baby AI Logo" 
+                className="w-full h-full rounded-full object-cover"
+                />
+            )}
+        </div>
+    </div>
+  );
+};
 
 const LoginView = ({ username, setUsername, password, setPassword, onLogin, onGoToSignup, videoError, setVideoError }: any) => (
   <div className="flex flex-col items-center justify-center h-full space-y-6 animate-fade-in py-4">
@@ -274,6 +291,7 @@ const App: React.FC = () => {
       setCurrentUser(username);
       if (savedBaby) {
         setBaby(savedBaby);
+        setVideoError(false); // Reset error state on fresh login
         setView(AppView.DASHBOARD);
       } else {
         // User exists but has no baby? Edge case, treat as new
@@ -289,16 +307,16 @@ const App: React.FC = () => {
     }
   };
 
-  // Helper para pegar a imagem estática correta da pasta public/img
+  // Helper para pegar o VIDEO correto baseado no gênero
   const getStaticAvatarPath = (gender: BabyGender): string => {
     switch (gender) {
       case BabyGender.BOY:
-        return '/img/menino.png';
+        return 'https://babyai.pythonanywhere.com/static/menino.mp4';
       case BabyGender.GIRL:
-        return '/img/menina.png';
+        return 'https://babyai.pythonanywhere.com/static/menina.mp4';
       case BabyGender.NEUTRAL:
       default:
-        return '/img/neutro.png';
+        return 'https://babyai.pythonanywhere.com/static/neutro.mp4';
     }
   };
 
@@ -319,7 +337,7 @@ const App: React.FC = () => {
     tryStartMusic();
 
     try {
-       // Usando imagens estáticas locais para evitar erro de cota da API
+       // Usando VÍDEOS hospedados para evitar erro de cota da API e erros de carregamento de imagem local
        // Delay artificial pequeno para dar sensação de "processamento"
        await new Promise(resolve => setTimeout(resolve, 800));
        
@@ -329,6 +347,7 @@ const App: React.FC = () => {
        setBaby(newBaby);
        saveBaby(newBaby); 
        setCurrentUser(creatorName);
+       setVideoError(false);
        setView(AppView.DASHBOARD);
     } catch (e) {
        console.error("Error creating baby:", e);
@@ -401,13 +420,14 @@ const App: React.FC = () => {
     
     deleteBaby(currentUser);
     
-    // Usando imagens estáticas locais
+    // Usando vídeos estáticos
     const avatarPath = getStaticAvatarPath(rebirthGender);
 
     const newBaby = createInitialBaby(rebirthName, rebirthGender, currentUser, avatarPath);
     
     setBaby(newBaby);
     saveBaby(newBaby);
+    setVideoError(false);
     setView(AppView.DASHBOARD);
   };
 
@@ -753,7 +773,22 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-200">
-                    <img src={baby?.avatarImage || "https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg"} alt="avatar" className="w-full h-full object-cover" />
+                    {baby?.avatarImage?.endsWith('.mp4') ? (
+                       <video 
+                         src={baby.avatarImage} 
+                         className="w-full h-full object-cover" 
+                         autoPlay 
+                         loop 
+                         muted 
+                         playsInline 
+                       />
+                    ) : (
+                       <img 
+                         src={baby?.avatarImage || "https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg"} 
+                         alt="avatar" 
+                         className="w-full h-full object-cover" 
+                       />
+                    )}
                 </div>
              </div>
 
