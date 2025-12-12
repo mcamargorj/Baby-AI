@@ -735,20 +735,33 @@ const App: React.FC = () => {
             </div>
             
             <div className="space-y-4 flex-1 overflow-y-auto p-1">
-               <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
-                  <p className="text-indigo-800 font-medium text-sm mb-2">O que você quer ensinar hoje?</p>
+               <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 shadow-sm relative">
+                  <p className="text-indigo-800 font-medium text-sm mb-2 ml-1">O que você quer ensinar hoje?</p>
+                  
+                  {/* Topic Input */}
                   <Input 
                     placeholder="Assunto (ex: Cores, Animais)" 
                     value={teachTopic}
                     onChange={(e) => setTeachTopic(e.target.value)}
                     className="bg-white mb-3"
                   />
-                  <textarea 
-                    className="w-full bg-white border-2 border-indigo-200 rounded-xl p-3 text-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-medium placeholder-gray-400 resize-none h-32"
-                    placeholder="Explique para o baby..."
-                    value={teachContent}
-                    onChange={(e) => setTeachContent(e.target.value)}
-                  />
+                  
+                  {/* Content Textarea with Mic */}
+                  <div className="relative">
+                    <textarea 
+                      className="w-full bg-white border-2 border-indigo-200 rounded-xl p-3 text-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-medium placeholder-gray-400 resize-none h-40 pb-12" // Added padding bottom for mic button space
+                      placeholder="Explique para o baby..."
+                      value={teachContent}
+                      onChange={(e) => setTeachContent(e.target.value)}
+                    />
+                    <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                        <span className="text-xs text-gray-400 font-medium">Toque para falar</span>
+                        <MicButton 
+                            onResult={(text) => setTeachContent(prev => appendVoiceText(prev, text))} 
+                            className="bg-indigo-100 text-indigo-500 hover:bg-indigo-200 ring-indigo-200 shadow-sm"
+                        />
+                    </div>
+                  </div>
                </div>
             </div>
 
