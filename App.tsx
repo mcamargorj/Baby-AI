@@ -603,9 +603,7 @@ const App: React.FC = () => {
                    <span className="text-sm font-bold text-gray-700">{baby?.level}</span>
                  </div>
                </div>
-               <button onClick={() => setView(AppView.LOGIN)} className="p-2 text-gray-400 hover:text-red-500 transition-colors bg-white rounded-xl shadow-sm hover:shadow-md">
-                 <LogOut size={18} />
-               </button>
+               {/* Logout removed from here to prevent overlap with audio button */}
             </div>
 
             {/* Main Content Area */}
@@ -703,12 +701,19 @@ const App: React.FC = () => {
                 </button>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col gap-2 pb-4">
                  <button 
                     onClick={() => setView(AppView.REBIRTH)} 
                     className="w-full py-2 text-xs font-bold text-gray-400 hover:text-purple-600 flex items-center justify-center gap-1 transition-colors"
                  >
                     <RefreshCw size={12} /> Reiniciar Vida (Rebirth)
+                 </button>
+                 
+                 <button 
+                    onClick={() => setView(AppView.LOGIN)} 
+                    className="w-full py-3 rounded-xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-100 flex items-center justify-center gap-2 transition-colors border border-red-100"
+                 >
+                    <LogOut size={16} /> Sair do App
                  </button>
               </div>
 
@@ -718,192 +723,162 @@ const App: React.FC = () => {
 
       case AppView.TEACH:
         return (
-          <div className="flex flex-col h-full animate-fade-in">
-             <div className="flex items-center gap-2 mb-4">
-                <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-indigo-600 transition-colors">
-                  <ArrowLeft size={28} />
-                </button>
-                <h2 className="text-2xl font-display font-bold text-indigo-600 flex items-center gap-2">
-                   <BookOpen size={24} /> Ensinar
-                </h2>
-             </div>
-             <p className="text-gray-500 text-sm mb-6 bg-white/50 p-3 rounded-xl">
-               Ensine algo novo para o {baby?.name}! Se ele gostar, vai ganhar XP e ficar mais inteligente.
-             </p>
-             <div className="space-y-4 flex-1">
-                <Input 
-                  placeholder="Tópico (ex: Cores, Animais)" 
-                  value={teachTopic}
-                  onChange={(e) => setTeachTopic(e.target.value)}
-                  className="bg-white"
-                />
-                <div className="relative">
+          <div className="flex flex-col h-full animate-fade-in space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-indigo-500 transition-colors">
+                <ArrowLeft size={28} />
+              </button>
+              <h2 className="text-2xl font-display font-bold text-indigo-500 flex items-center gap-2">
+                 <BookOpen size={24} /> Hora de Aprender
+              </h2>
+            </div>
+            
+            <div className="space-y-4 flex-1 overflow-y-auto p-1">
+               <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                  <p className="text-indigo-800 font-medium text-sm mb-2">O que você quer ensinar hoje?</p>
+                  <Input 
+                    placeholder="Assunto (ex: Cores, Animais)" 
+                    value={teachTopic}
+                    onChange={(e) => setTeachTopic(e.target.value)}
+                    className="bg-white mb-3"
+                  />
                   <textarea 
-                    className="w-full h-32 bg-white border-2 border-orange-200 rounded-xl p-4 text-gray-700 focus:outline-none focus:border-orange-500 resize-none font-medium placeholder-gray-400"
-                    placeholder="Explique aqui..."
+                    className="w-full bg-white border-2 border-indigo-200 rounded-xl p-3 text-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-medium placeholder-gray-400 resize-none h-32"
+                    placeholder="Explique para o baby..."
                     value={teachContent}
                     onChange={(e) => setTeachContent(e.target.value)}
                   />
-                  <MicButton 
-                    onResult={(text) => setTeachContent((prev) => appendVoiceText(prev, text))}
-                    className="absolute right-2 bottom-2"
-                  />
-                </div>
-             </div>
-             <div className="mt-auto pt-4">
-                <Button fullWidth onClick={handleTeach} disabled={isTeaching || !teachTopic || !teachContent}>
-                  {isTeaching ? <span className="animate-pulse">Aprendendo...</span> : 'Ensinar Baby AI 🎓'}
-                </Button>
-             </div>
+               </div>
+            </div>
+
+            <div className="pt-2">
+               <Button fullWidth onClick={handleTeach} disabled={isTeaching} variant="secondary">
+                 {isTeaching ? 'Ensinando...' : 'Ensinar Baby! 🎓'}
+               </Button>
+            </div>
           </div>
         );
 
       case AppView.CHAT:
         return (
           <div className="flex flex-col h-full animate-fade-in">
-             {/* Header */}
-             <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-pink-600 transition-colors">
-                    <ArrowLeft size={24} />
-                  </button>
-                  <div className="flex flex-col">
-                    <h2 className="text-xl font-display font-bold text-pink-600">Chat</h2>
-                    <span className="text-xs text-gray-400 font-bold">com {baby?.name}</span>
-                  </div>
-                </div>
-                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-200">
-                    {baby?.avatarImage?.endsWith('.mp4') ? (
-                       <video 
-                         src={baby.avatarImage} 
-                         className="w-full h-full object-cover" 
-                         autoPlay 
-                         loop 
-                         muted 
-                         playsInline 
-                       />
-                    ) : (
-                       <img 
-                         src={baby?.avatarImage || "https://img.freepik.com/free-vector/cute-baby-boy-profile-cartoon_18591-56161.jpg"} 
-                         alt="avatar" 
-                         className="w-full h-full object-cover" 
-                       />
-                    )}
-                </div>
+             <div className="flex items-center gap-2 mb-4 shrink-0">
+                <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-pink-500 transition-colors">
+                  <ArrowLeft size={28} />
+                </button>
+                <h2 className="text-2xl font-display font-bold text-pink-500 flex items-center gap-2">
+                   <MessageCircle size={24} /> Conversar
+                </h2>
              </div>
 
-             {/* Messages Area */}
-             <div className="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 scrollbar-thin">
+             <div className="flex-1 overflow-y-auto space-y-3 p-2 bg-white/40 rounded-2xl border border-white mb-4 scrollbar-thin">
                 {chatHistory.length === 0 && (
-                   <div className="text-center text-gray-400 mt-10 text-sm">
-                      Diga "Oi" para começar! 👋
-                   </div>
+                   <p className="text-center text-gray-400 text-sm mt-10">Diga "Oi" para começar! 👋</p>
                 )}
                 {chatHistory.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm font-medium shadow-sm ${
-                       msg.role === 'user' 
-                         ? 'bg-purple-600 text-white rounded-tr-none' 
-                         : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
+                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm font-medium ${
+                        msg.role === 'user' 
+                          ? 'bg-orange-100 text-orange-900 rounded-tr-sm' 
+                          : 'bg-white text-gray-800 border border-gray-100 rounded-tl-sm shadow-sm'
                      }`}>
                         {msg.text}
                      </div>
                   </div>
                 ))}
                 {isChatting && (
-                   <div className="flex justify-start">
-                     <div className="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms'}}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms'}}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms'}}></div>
-                        </div>
+                  <div className="flex justify-start">
+                     <div className="bg-white text-gray-400 p-3 rounded-2xl rounded-tl-sm text-sm border border-gray-100 shadow-sm animate-pulse">
+                        Digitando...
                      </div>
-                   </div>
+                  </div>
                 )}
                 <div ref={chatEndRef} />
              </div>
 
-             {/* Input Area */}
-             <div className="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 flex gap-2 items-center">
-                <div className="relative flex-1">
-                   <input 
-                     className="w-full bg-gray-50 rounded-xl py-3 pl-3 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-200"
-                     placeholder="Digite sua mensagem..."
-                     value={chatMessage}
-                     onChange={e => setChatMessage(e.target.value)}
-                     onKeyDown={e => e.key === 'Enter' && handleChat()}
+             <div className="shrink-0 flex gap-2 items-center">
+                <MicButton onResult={(text) => setChatMessage(prev => appendVoiceText(prev, text))} />
+                <div className="flex-1">
+                   <Input 
+                      placeholder="Sua mensagem..." 
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleChat()}
+                      className="bg-white border-pink-200 focus:border-pink-500 focus:ring-pink-200"
                    />
-                   <div className="absolute right-1 top-1/2 -translate-y-1/2">
-                      <MicButton 
-                        onResult={(text) => setChatMessage((prev) => appendVoiceText(prev, text))}
-                        className="scale-75 origin-right"
-                      />
-                   </div>
                 </div>
                 <button 
                   onClick={handleChat}
-                  disabled={!chatMessage.trim() || isChatting}
-                  className="bg-pink-500 text-white p-3 rounded-xl hover:bg-pink-600 disabled:opacity-50 transition-colors shadow-sm"
+                  disabled={isChatting || !chatMessage.trim()}
+                  className="bg-pink-500 text-white p-3 rounded-xl hover:bg-pink-600 transition-colors disabled:opacity-50 shadow-md"
                 >
-                  <Send size={18} />
+                   <Send size={20} />
                 </button>
              </div>
           </div>
         );
 
       case AppView.REBIRTH:
-        return (
-          <div className="flex flex-col h-full animate-fade-in justify-center items-center text-center p-4">
-             <Sparkles className="text-yellow-400 w-16 h-16 mb-4 animate-spin-slow" />
-             <h2 className="text-2xl font-display font-bold text-purple-700 mb-2">Renascimento</h2>
-             <p className="text-gray-600 text-sm mb-8">
-               Seu baby atual será deletado e um novo nascerá. Todo o progresso será perdido. Tem certeza?
-             </p>
-             
-             <div className="w-full max-w-xs space-y-4">
-                <Input 
-                   placeholder="Novo Nome"
-                   value={rebirthName}
-                   onChange={e => setRebirthName(e.target.value)}
-                />
-                <div className="flex gap-2 justify-center">
-                  {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
-                    <button
-                      key={g}
-                      onClick={() => setRebirthGender(g)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold border-b-4 transition-all ${
-                        rebirthGender === g 
-                          ? 'bg-purple-500 text-white border-purple-700' 
-                          : 'bg-white text-gray-500 border-gray-200'
-                      }`}
-                    >
-                      {g}
+         return (
+            <div className="flex flex-col h-full animate-fade-in pt-4">
+                <div className="flex items-center gap-2 mb-6">
+                    <button onClick={() => setView(AppView.DASHBOARD)} className="text-gray-500 hover:text-purple-500 transition-colors">
+                    <ArrowLeft size={28} />
                     </button>
-                  ))}
+                    <h2 className="text-2xl font-display font-bold text-gray-700">Rebirth</h2>
                 </div>
-                <Button fullWidth variant="danger" onClick={handleRebirth}>
-                   Confirmar Renascimento
-                </Button>
-                <button 
-                   onClick={() => setView(AppView.DASHBOARD)}
-                   className="text-gray-400 text-sm font-bold hover:text-gray-600 underline"
-                >
-                   Cancelar
-                </button>
-             </div>
-          </div>
-        );
+
+                <div className="flex-1 flex flex-col items-center text-center space-y-6 px-4">
+                    <div className="bg-red-50 p-4 rounded-full">
+                        <RefreshCw size={48} className="text-red-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-800">Reiniciar Jornada?</h3>
+                        <p className="text-sm text-gray-500 mt-2">Isso apagará seu Baby atual para sempre e você poderá criar um novo.</p>
+                    </div>
+
+                    <div className="w-full space-y-4 text-left bg-white/50 p-4 rounded-2xl border border-white">
+                        <Input 
+                            placeholder="Nome do novo Baby" 
+                            value={rebirthName}
+                            onChange={(e) => setRebirthName(e.target.value)}
+                        />
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 ml-1 mb-1 block">Novo Gênero</label>
+                            <div className="flex gap-2">
+                                {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
+                                    <button
+                                    key={g}
+                                    onClick={() => setRebirthGender(g)}
+                                    className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
+                                        rebirthGender === g 
+                                        ? 'bg-purple-100 border-purple-400 text-purple-700' 
+                                        : 'bg-white border-gray-100 text-gray-400'
+                                    }`}
+                                    >
+                                    {g}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <Button variant="danger" fullWidth onClick={handleRebirth}>
+                        Confirmar Rebirth
+                    </Button>
+                </div>
+            </div>
+         );
 
       default:
-        return <div>View not found</div>;
+        return null;
     }
   };
 
   return (
     <Layout isMusicPlaying={isMusicPlaying} toggleMusic={toggleMusic}>
-       <audio ref={audioRef} src={musicSrc} loop />
-       {renderContent()}
+      {renderContent()}
+      <audio ref={audioRef} src={musicSrc} loop />
     </Layout>
   );
 };
