@@ -98,70 +98,78 @@ const SignupView = ({
   signupGender, setSignupGender, 
   onCreate, onBack,
   isGenerating
-}: any) => (
-  <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
-    <div className="text-center mb-6">
-        <div className="inline-block p-2">
-            <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
+}: any) => {
+
+  const getGenderButtonStyle = (g: BabyGender) => {
+    const isSelected = signupGender === g;
+    return `flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
+      isSelected 
+        ? 'bg-orange-100 border-orange-400 text-orange-600 shadow-inner' 
+        : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50'
+    }`;
+  };
+
+  return (
+    <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
+      <div className="text-center mb-6">
+          <div className="inline-block p-2">
+              <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
+          </div>
+          <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
+          <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
+          </h1>
+          <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
+      </div>
+      <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
+        <Input 
+          placeholder="Escolha um Usuário" 
+          value={creatorName} 
+          onChange={e => setCreatorName(e.target.value)} 
+          disabled={isGenerating}
+        />
+        <Input 
+          placeholder="Escolha uma Senha" 
+          type="password"
+          value={signupPassword}
+          onChange={e => setSignupPassword(e.target.value)}
+          disabled={isGenerating}
+        />
+        <div className="py-1"></div>
+        <Input 
+          placeholder="Nome do seu Baby AI" 
+          value={babyName} 
+          onChange={e => setBabyName(e.target.value)} 
+          disabled={isGenerating}
+        />
+        <div>
+          <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
+          <div className="flex gap-2">
+            {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
+              <button
+                key={g}
+                onClick={() => !isGenerating && setSignupGender(g)}
+                disabled={isGenerating}
+                className={getGenderButtonStyle(g)}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
         </div>
-        <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
-        <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
-        </h1>
-        <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
-    </div>
-    <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
-      <Input 
-        placeholder="Escolha um Usuário" 
-        value={creatorName} 
-        onChange={e => setCreatorName(e.target.value)} 
-        disabled={isGenerating}
-      />
-      <Input 
-        placeholder="Escolha uma Senha" 
-        type="password"
-        value={signupPassword}
-        onChange={e => setSignupPassword(e.target.value)}
-        disabled={isGenerating}
-      />
-      <div className="py-1"></div>
-      <Input 
-        placeholder="Nome do seu Baby AI" 
-        value={babyName} 
-        onChange={e => setBabyName(e.target.value)} 
-        disabled={isGenerating}
-      />
-      <div>
-        <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
-        <div className="flex gap-2">
-          {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
-            <button
-              key={g}
-              onClick={() => !isGenerating && setSignupGender(g)}
-              disabled={isGenerating}
-              className={`flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
-                signupGender === g 
-                  ? 'bg-orange-100 border-orange-400 text-orange-600 shadow-inner' 
-                  : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50'
-              }`}
-            >
-              {g}
+      </div>
+      <div className="w-full max-w-xs space-y-3 pt-4 pb-2">
+        <Button fullWidth onClick={onCreate} disabled={isGenerating}>
+          {isGenerating ? "Criando... 🐣" : "Nascer Baby AI! 🐣"}
+        </Button>
+        <div className="flex justify-center">
+            <button onClick={onBack} disabled={isGenerating} className="text-gray-500 font-bold text-sm hover:underline">
+                Voltar para Login
             </button>
-          ))}
         </div>
       </div>
     </div>
-    <div className="w-full max-w-xs space-y-3 pt-4 pb-2">
-      <Button fullWidth onClick={onCreate} disabled={isGenerating}>
-        {isGenerating ? "Criando... 🐣" : "Nascer Baby AI! 🐣"}
-      </Button>
-      <div className="flex justify-center">
-          <button onClick={onBack} disabled={isGenerating} className="text-gray-500 font-bold text-sm hover:underline">
-              Voltar para Login
-          </button>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 const App = () => {
   const [view, setView] = useState<AppView>(AppView.LOGIN);
