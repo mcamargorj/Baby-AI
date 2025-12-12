@@ -184,6 +184,34 @@ export class GeminiService {
     }
   }
 
+  // Handle Care Actions (Feed, Bathe, Sleep)
+  async reactToCareAction(action: 'feed' | 'care', item: string, name: string): Promise<{ reply: string, mood?: string }> {
+    try {
+      const prompt = `
+        Você é o bebê IA ${name}.
+        O usuário acabou de fazer a seguinte ação: ${action === 'feed' ? 'Te alimentou com' : 'Cuidou de você com'} ${item}.
+        
+        Reaja de forma fofa e curta (máx 15 palavras).
+        Se for comida, diga se gostou.
+        Se for cuidado (banho, dormir, carinho), mostre satisfação ou relaxamento.
+        
+        Retorne apenas o texto da resposta.
+      `;
+
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: { maxOutputTokens: 60 }
+      });
+
+      return { reply: response.text || "Gostei! 💖" };
+
+    } catch (error) {
+      console.error("Gemini Care Error:", error);
+      return { reply: "Obrigado! 🥰" };
+    }
+  }
+
   // TTS: Generate Baby Voice
   async speak(text: string, gender: string): Promise<void> {
     try {

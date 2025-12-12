@@ -4,7 +4,9 @@ export enum AppView {
   DASHBOARD = 'DASHBOARD',
   TEACH = 'TEACH',
   CHAT = 'CHAT',
-  REBIRTH = 'REBIRTH'
+  REBIRTH = 'REBIRTH',
+  FEED = 'FEED',
+  CARE = 'CARE'
 }
 
 export enum BabyGender {
@@ -25,7 +27,9 @@ export interface BabyState {
   birthDate: number; // Timestamp
   xp: number;
   level: string;
-  mood: 'Feliz' | 'Triste' | 'Com fome' | 'Sonolento' | 'Curioso';
+  mood: 'Feliz' | 'Triste' | 'Com fome' | 'Sonolento' | 'Curioso' | 'Limpinho' | 'Amado' | 'Cheio de Energia';
+  hunger: number; // 0-100 (100 = full)
+  energy: number; // 0-100 (100 = energetic)
   userOwner: string;
   memory: string[]; // List of learned facts
   avatarImage?: string; // Base64 generated image

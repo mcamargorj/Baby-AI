@@ -46,6 +46,9 @@ export const loadBaby = (username: string): BabyState | null => {
   // Migration for older saves
   const parsed = JSON.parse(data);
   if (!parsed.memory) parsed.memory = [];
+  if (parsed.hunger === undefined) parsed.hunger = 50;
+  if (parsed.energy === undefined) parsed.energy = 80;
+  
   return parsed;
 };
 
@@ -58,6 +61,8 @@ export const createInitialBaby = (name: string, gender: BabyGender, userOwner: s
     xp: 0,
     level: "Recém-nascido",
     mood: 'Curioso',
+    hunger: 50,
+    energy: 100,
     userOwner,
     memory: [],
     avatarImage
