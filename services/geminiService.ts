@@ -45,27 +45,36 @@ export class GeminiService {
 
   constructor() {
     // Robust API Key Retrieval for Vercel/Vite
-    // 1. Check standard process.env (Node/Webpack)
-    // 2. Check import.meta.env (Vite standard)
-    // 3. Fallback to empty string to prevent constructor crash (will fail on first call if empty)
+    // Priority:
+    // 1. process.env.API_KEY (Node/Webpack standard)
+    // 2. import.meta.env.VITE_API_KEY (Vite standard)
+    // 3. import.meta.env.API_KEY (Fallback if user named it API_KEY)
     
     let apiKey = '';
     
+    // Check process.env first
     if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
       apiKey = process.env.API_KEY;
-    } else {
-      // @ts-ignore - Handle Vite specific env var if process.env is missing
+    }
+    
+    // Check Vite env vars if not found yet
+    if (!apiKey) {
       try {
          // @ts-ignore
-         if (import.meta && import.meta.env && import.meta.env.VITE_API_KEY) {
+         const env = import.meta && import.meta.env;
+         if (env) {
             // @ts-ignore
-            apiKey = import.meta.env.VITE_API_KEY;
+            apiKey = env.VITE_API_KEY || env.API_KEY || '';
          }
       } catch(e) {
         // Ignore errors if import.meta is not available
       }
     }
     
+    if (!apiKey) {
+        console.warn("API Key missing. Please set VITE_API_KEY or API_KEY in your environment.");
+    }
+
     this.ai = new GoogleGenAI({ apiKey });
   }
 
