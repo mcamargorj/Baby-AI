@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, RefreshCw, Wand2, Utensils, Heart, Moon, Bath, Apple, Candy, Milk, Battery, Zap } from 'lucide-react';
+import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, Utensils, Moon, Bath, Milk, Zap } from 'lucide-react';
 import Layout from './components/Layout';
 import Button from './components/Button';
 import Input from './components/Input';
@@ -303,7 +303,7 @@ const App = () => {
     setIsProcessing(true);
 
     if (view === AppView.CHAT) {
-        const newHistory = [...chatHistory, { role: 'user', text, timestamp: Date.now() }];
+        const newHistory: ChatMessage[] = [...chatHistory, { role: 'user', text, timestamp: Date.now() }];
         setChatHistory(newHistory);
         
         // Convert internal chat history to Gemini format
