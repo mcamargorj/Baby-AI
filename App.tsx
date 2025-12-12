@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, RefreshCw, Wand2, Utensils, Heart, Moon, Bath, Apple, Candy, Milk, Battery, Zap } from 'lucide-react';
+import { Sparkles, Brain, MessageCircle, LogOut, ArrowLeft, Send, BookOpen, RefreshCw, Wand2, Utensils, Heart, Moon, Bath, Apple, Candy, Milk, Zap } from 'lucide-react';
 import Layout from './components/Layout';
 import Button from './components/Button';
 import Input from './components/Input';
@@ -98,76 +98,84 @@ const SignupView = ({
   signupGender, setSignupGender, 
   onCreate, onBack,
   isGenerating
-}: any) => (
-  <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
-    <div className="text-center mb-6">
-        <div className="inline-block p-2">
-            <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
-        </div>
-        <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
-        <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
-        </h1>
-        <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
-    </div>
-    <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
-      <Input 
-        placeholder="Escolha um Usuário" 
-        value={creatorName} 
-        onChange={e => setCreatorName(e.target.value)} 
-        disabled={isGenerating}
-      />
-      <Input 
-        placeholder="Escolha uma Senha" 
-        type="password"
-        value={signupPassword}
-        onChange={e => setSignupPassword(e.target.value)}
-        disabled={isGenerating}
-      />
-      <div className="py-1"></div>
-      <Input 
-        placeholder="Nome do seu Baby AI" 
-        value={babyName} 
-        onChange={e => setBabyName(e.target.value)} 
-        disabled={isGenerating}
-      />
-      <div>
-        <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
-        <div className="flex gap-2">
-          {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
-            <button
-              key={g}
-              onClick={() => !isGenerating && setSignupGender(g)}
-              disabled={isGenerating}
-              className={`flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
-                signupGender === g 
-                  ? 'bg-orange-500 text-white border-orange-700 transform scale-105' 
-                  : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {g}
-            </button>
-          ))}
+}: any) => {
+
+  const getGenderButtonStyle = (g: BabyGender) => {
+    const isSelected = signupGender === g;
+    return `flex-1 py-2 rounded-xl text-sm font-bold border-b-4 transition-all ${
+      isSelected 
+        ? 'bg-orange-500 text-white border-orange-700 transform scale-105' 
+        : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+    }`;
+  };
+
+  return (
+    <div className="flex flex-col items-center h-full pt-2 animate-fade-in w-full">
+      <div className="text-center mb-6">
+          <div className="inline-block p-2">
+              <Sparkles className="text-purple-600 w-8 h-8 inline-block mr-2 animate-pulse" />
+          </div>
+          <h1 className="text-2xl font-display font-bold text-center leading-tight inline-block">
+          <span className="text-purple-700">Vamos</span> <span className="text-green-500">criar</span> <span className="text-orange-500">seu Baby AI!</span>
+          </h1>
+          <p className="text-gray-500 text-center text-xs mt-2 px-8">Preencha os campos abaixo para dar vida ao seu amigo virtual 🍼</p>
+      </div>
+      <div className="w-full max-w-xs space-y-3 flex-1 overflow-y-auto pb-4 px-1 scrollbar-thin">
+        <Input 
+          placeholder="Escolha um Usuário" 
+          value={creatorName} 
+          onChange={e => setCreatorName(e.target.value)} 
+          disabled={isGenerating}
+        />
+        <Input 
+          placeholder="Escolha uma Senha" 
+          type="password"
+          value={signupPassword}
+          onChange={e => setSignupPassword(e.target.value)}
+          disabled={isGenerating}
+        />
+        <div className="py-1"></div>
+        <Input 
+          placeholder="Nome do seu Baby AI" 
+          value={babyName} 
+          onChange={e => setBabyName(e.target.value)} 
+          disabled={isGenerating}
+        />
+        <div>
+          <label className="text-sm font-bold text-gray-600 block mb-2 pl-1">Gênero</label>
+          <div className="flex gap-2">
+            {[BabyGender.BOY, BabyGender.GIRL, BabyGender.NEUTRAL].map((g) => (
+              <button
+                key={g}
+                onClick={() => !isGenerating && setSignupGender(g)}
+                disabled={isGenerating}
+                className={getGenderButtonStyle(g)}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+      <div className="w-full max-w-xs space-y-3 pt-2 mt-auto">
+        <Button fullWidth onClick={onCreate} variant="success" disabled={isGenerating}>
+          {isGenerating ? (
+            <span className="flex items-center gap-2">
+              <Wand2 className="animate-spin" size={18} /> Gerando visual único...
+            </span>
+          ) : 'Nascer Baby AI! 🐣'}
+        </Button>
+        <button 
+          onClick={onBack}
+          disabled={isGenerating}
+          className="w-full text-center text-gray-400 text-sm font-bold hover:text-gray-600"
+        >
+          Voltar para Login
+        </button>
+      </div>
     </div>
-    <div className="w-full max-w-xs space-y-3 pt-2 mt-auto">
-      <Button fullWidth onClick={onCreate} variant="success" disabled={isGenerating}>
-        {isGenerating ? (
-           <span className="flex items-center gap-2">
-             <Wand2 className="animate-spin" size={18} /> Gerando visual único...
-           </span>
-        ) : 'Nascer Baby AI! 🐣'}
-      </Button>
-      <button 
-        onClick={onBack}
-        disabled={isGenerating}
-        className="w-full text-center text-gray-400 text-sm font-bold hover:text-gray-600"
-      >
-        Voltar para Login
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 // --- Main App Component ---
 
