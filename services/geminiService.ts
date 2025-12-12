@@ -44,7 +44,17 @@ export class GeminiService {
   private audioContext: AudioContext | null = null;
 
   constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Safety check for process.env to prevent white screen crashes
+    let apiKey = '';
+    try {
+      if (typeof process !== 'undefined' && process.env) {
+        apiKey = process.env.API_KEY || '';
+      }
+    } catch (e) {
+      console.warn("Could not access process.env");
+    }
+    
+    this.ai = new GoogleGenAI({ apiKey });
   }
 
   // Reuse AudioContext to prevent "Max AudioContexts reached" error
