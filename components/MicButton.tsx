@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, XCircle } from 'lucide-react';
+import { Mic, Trash2, ChevronLeft } from 'lucide-react';
 
 interface MicButtonProps {
   onResult: (text: string) => void;
@@ -9,9 +9,13 @@ interface MicButtonProps {
 const MicButton: React.FC<MicButtonProps> = ({ onResult, className = '' }) => {
   const [isListening, setIsListening] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [dragX, setDragX] = useState(0);
   const [recognition, setRecognition] = useState<any>(null);
+  
+  const timerRef = useRef<number | null>(null);
   const startPos = useRef<{ x: number; y: number } | null>(null);
-  const CANCEL_THRESHOLD = 60; // Pixels to drag up to cancel
+  const CANCEL_THRESHOLD_X = -100; // Pixels to drag left to cancel (WhatsApp style)
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -25,14 +29,26 @@ const MicButton: React.FC<MicButtonProps> = ({ onResult, className = '' }) => {
       rec.onstart = () => {
         setIsListening(true);
         setIsCancelled(false);
+        setDuration(0);
+        setDragX(0);
+        
+        // Start timer
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = window.setInterval(() => {
+          setDuration(prev => prev + 1);
+        }, 1000);
       };
       
       rec.onend = () => {
         setIsListening(false);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       };
 
       rec.onresult = (event: any) => {
-        // Only process result if NOT cancelled
+        // Logic: Only process if the user didn't slide to cancel
         if (!isCancelled) {
           const transcript = event.results[event.results.length - 1][0].transcript;
           if (transcript) {
@@ -42,88 +58,131 @@ const MicButton: React.FC<MicButtonProps> = ({ onResult, className = '' }) => {
       };
 
       rec.onerror = (event: any) => {
-        console.error("Erro no reconhecimento de voz:", event.error);
+        console.error("Erro no reconhecimento:", event.error);
         setIsListening(false);
       };
 
       setRecognition(rec);
     }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [onResult, isCancelled]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!recognition) {
-      alert("Navegador não suporta reconhecimento de voz.");
+      alert("Seu navegador não suporta reconhecimento de voz.");
       return;
     }
     
-    // Set start position for drag tracking
     startPos.current = { x: e.clientX, y: e.clientY };
     setIsCancelled(false);
+    setDragX(0);
     
     try {
       recognition.start();
-      // Vibrate if supported
       if ('vibrate' in navigator) navigator.vibrate(50);
     } catch (err) {
-      console.warn("Recognition already started or error:", err);
+      console.warn("Reconhecimento já está ativo", err);
     }
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (recognition && isListening) {
-      recognition.stop();
-    }
-    startPos.current = null;
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (isListening && startPos.current) {
-      const distY = startPos.current.y - e.clientY;
+      const deltaX = e.clientX - startPos.current.x;
       
-      if (distY > CANCEL_THRESHOLD) {
-        if (!isCancelled) {
-          setIsCancelled(true);
-          if ('vibrate' in navigator) navigator.vibrate([30, 30]);
+      // WhatsApp style: drag to the LEFT to cancel
+      if (deltaX < 0) {
+        setDragX(deltaX);
+        
+        // If dragged past threshold, mark as cancelled
+        if (deltaX < CANCEL_THRESHOLD_X) {
+          if (!isCancelled) {
+            setIsCancelled(true);
+            if ('vibrate' in navigator) navigator.vibrate([30, 30]);
+          }
+        } else {
+          setIsCancelled(false);
         }
-      } else {
-        setIsCancelled(false);
       }
     }
   };
 
+  const handlePointerUp = () => {
+    if (recognition && isListening) {
+      recognition.stop();
+    }
+    startPos.current = null;
+    // Note: the onresult callback handles the actual text submission if not cancelled
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="relative flex items-center justify-center">
-      {/* Cancel Hint Overlay */}
+      {/* Recording Overlay Bar (Matches Image 2) */}
       {isListening && (
-        <div className={`absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold px-2 py-1 rounded-full transition-all duration-300 pointer-events-none z-50 ${
-          isCancelled ? 'bg-red-500 text-white animate-bounce' : 'bg-gray-800/80 text-white animate-pulse'
-        }`}>
-          {isCancelled ? 'SOLTE PARA CANCELAR' : 'ARRASTE PARA CIMA CANCELAR'}
+        <div className="fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-100 flex items-center px-6 z-[200] animate-in fade-in slide-in-from-bottom-5 duration-200">
+          <div className="flex items-center w-full max-w-md mx-auto gap-4">
+            
+            {/* Red Pulsing Mic Icon */}
+            <div className="text-red-500 animate-pulse">
+              <Mic size={28} fill="currentColor" />
+            </div>
+            
+            {/* Timer */}
+            <span className="text-xl font-medium text-gray-700 w-16">
+              {formatTime(duration)}
+            </span>
+
+            {/* Slide to Cancel UI with Animation */}
+            <div 
+              className="flex-1 flex justify-center items-center gap-1 transition-opacity duration-200"
+              style={{ 
+                transform: `translateX(${dragX * 0.4}px)`,
+                opacity: Math.max(0, 1 - Math.abs(dragX / 150))
+              }}
+            >
+              <span className={`text-gray-400 font-medium ${isCancelled ? 'text-red-500 font-bold' : ''}`}>
+                {isCancelled ? 'Cancelado!' : 'Deslize para cancelar'}
+              </span>
+              {!isCancelled && <ChevronLeft size={20} className="text-gray-300 animate-pulse" />}
+            </div>
+
+            {/* Trash icon that lights up when cancelled */}
+            <div className={`transition-all duration-300 ${isCancelled ? 'scale-150 text-red-600' : 'text-gray-200'}`}>
+              <Trash2 size={24} />
+            </div>
+          </div>
         </div>
       )}
 
+      {/* Main Mic Trigger Button */}
       <button 
         type="button"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         onPointerMove={handlePointerMove}
-        className={`p-3 rounded-full transition-all duration-300 flex items-center justify-center shadow-lg select-none touch-none ${
+        className={`relative z-[201] p-3 rounded-full transition-all duration-300 flex items-center justify-center shadow-lg select-none touch-none ${
           isListening 
-            ? (isCancelled 
-                ? 'bg-gray-400 text-white scale-90 opacity-50' 
-                : 'bg-red-500 text-white animate-pulse scale-125 ring-4 ring-red-200 z-50') 
-            : 'bg-orange-100 text-orange-500 hover:bg-orange-200'
+            ? 'bg-red-500 text-white scale-125 ring-4 ring-red-100' 
+            : 'bg-orange-100 text-orange-500 hover:bg-orange-200 active:scale-90'
         } ${className}`}
         style={{ touchAction: 'none' }}
-        title="Segure para falar"
+        title="Segure para gravar"
       >
-        {isListening ? (isCancelled ? <XCircle size={24} /> : <Mic size={24} />) : <Mic size={20} />}
+        <Mic size={isListening ? 24 : 20} />
       </button>
 
-      {/* Recording Ring Animation */}
-      {isListening && !isCancelled && (
-        <div className="absolute inset-0 rounded-full bg-red-400 animate-ping opacity-20 -z-10" />
+      {/* Behind-the-button Ripple when active */}
+      {isListening && (
+        <div className="absolute inset-0 rounded-full bg-red-400 animate-ping opacity-20 z-[199]" />
       )}
     </div>
   );
